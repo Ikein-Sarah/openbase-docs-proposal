@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Openbase Docs — Proposed Structure</title>
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    --bg: #ffffff;
+    --surface: #fafafa;
+    --surface-2: #f4f4f4;
+    --border: #e7e7e7;
+    --border-strong: #d6d6d6;
+    --text: #141414;
+    --text-dim: #6e6e6e;
+    --text-faint: #9c9c9c;
+    --new: #2c5cc5;
+    --new-bg: #eef3ff;
+    --new-border: #cfdeff;
+    --hot: #b45309;
+    --hot-border: #eed3ab;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0a0a0a;
+      --surface: #131313;
+      --surface-2: #1a1a1a;
+      --border: #262626;
+      --border-strong: #363636;
+      --text: #f2f2f2;
+      --text-dim: #9c9c9c;
+      --text-faint: #6e6e6e;
+      --new: #7fa9ff;
+      --new-bg: #101b31;
+      --new-border: #1f3357;
+      --hot: #f5b45c;
+      --hot-border: #46330f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a0a0a; --surface: #131313; --surface-2: #1a1a1a;
+    --border: #262626; --border-strong: #363636;
+    --text: #f2f2f2; --text-dim: #9c9c9c; --text-faint: #6e6e6e;
+    --new: #7fa9ff; --new-bg: #101b31; --new-border: #1f3357;
+    --hot: #f5b45c; --hot-border: #46330f;
+  }
+
+  *, *::before, *::after { box-sizing: inherit; }
+
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 940px; margin: 0 auto; padding: 60px 24px 80px; }
+
+  /* ---------- header ---------- */
+  header { margin-bottom: 44px; }
+  .eyebrow {
+    font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
+    color: var(--hot); margin: 0 0 14px; font-weight: 650;
+  }
+  h1 {
+    font-size: clamp(27px, 4.4vw, 38px); line-height: 1.12;
+    margin: 0 0 26px; font-weight: 660; letter-spacing: -.025em;
+  }
+  .diagnosis {
+    font-size: clamp(16px, 2.3vw, 19px); line-height: 1.5;
+    margin: 0 0 22px; max-width: 58ch; font-weight: 450; color: var(--text);
+  }
+  .diagnosis b { font-weight: 670; }
+  .meta {
+    display: flex; gap: 10px 22px; flex-wrap: wrap;
+    font-size: 13px; color: var(--text-dim);
+    padding-top: 18px; border-top: 1px solid var(--border);
+  }
+  .meta span { display: inline-flex; align-items: center; gap: 7px; }
+  .swatch { width: 9px; height: 9px; border-radius: 50%; background: var(--hot); flex: none; }
+  .meta .by { margin-left: auto; color: var(--text-faint); }
+
+  /* ---------- toolbar ---------- */
+  .toolbar {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; margin: 0 0 16px;
+  }
+  .toolbar h2 {
+    margin: 0; font-size: 13px; letter-spacing: .13em; text-transform: uppercase;
+    font-weight: 700; color: var(--hot);
+  }
+  .controls { display: flex; gap: 7px; }
+  .btn {
+    font: inherit; font-size: 12.5px; padding: 5px 12px; border-radius: 6px;
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-dim); cursor: pointer;
+  }
+  .btn:hover { background: var(--surface-2); color: var(--text); }
+
+  /* ---------- accordions ---------- */
+  details {
+    border: 1px solid var(--border); border-radius: 10px;
+    margin-bottom: 9px; background: var(--bg); overflow: hidden;
+  }
+  details[open] { background: var(--surface); }
+  details.hot { border-color: var(--hot-border); }
+
+  summary {
+    list-style: none; cursor: pointer; padding: 14px 18px;
+    display: flex; align-items: center; gap: 12px; transition: background .12s ease;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary:hover { background: var(--surface-2); }
+  .chev { flex: none; width: 10px; height: 10px; color: var(--text-faint); transition: transform .18s ease; }
+  details[open] .chev { transform: rotate(90deg); }
+  .s-title { font-size: 14.5px; font-weight: 620; letter-spacing: -.01em; flex: none; }
+  details.hot .s-title { color: var(--hot); }
+  .s-why { font-size: 12.5px; color: var(--text-dim); flex: 1 1 auto; min-width: 0; }
+  .s-count { font-size: 11.5px; color: var(--text-faint); flex: none; font-variant-numeric: tabular-nums; }
+
+  .pages { list-style: none; margin: 0; padding: 2px 0 8px; border-top: 1px solid var(--border); }
+  .pages li { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; padding: 7px 18px 7px 40px; font-size: 14px; }
+  .name { font-weight: 470; }
+  .exists .name { color: var(--text-dim); }
+  li.key .name { color: var(--hot); font-weight: 600; }
+
+  .tag { font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; font-weight: 640; white-space: nowrap; }
+  .t-new { background: var(--new-bg); color: var(--new); border: 1px solid var(--new-border); }
+  .t-exists { background: transparent; color: var(--text-faint); border: 1px solid var(--border-strong); }
+
+  footer { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 14px; color: var(--text-dim); max-width: 64ch; }
+  footer h3 { font-size: 14px; margin: 0 0 12px; color: var(--text); font-weight: 640; }
+  footer ul { margin: 0; padding-left: 18px; }
+  footer li { margin-bottom: 7px; }
+  footer b { color: var(--hot); font-weight: 620; }
+
+  @media (max-width: 720px) { .s-why { display: none; } }
+  @media (max-width: 560px) {
+    .wrap { padding: 36px 16px 60px; }
+    .pages li { padding-left: 32px; padding-right: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Structural proposal</p>
+    <h1>Openbase documentation, restructured</h1>
+    <div class="meta">
+      <span>Page titles and ordering only, no content written</span>
+      <span>Sections expand</span>
+      <span><i class="swatch"></i> the three I would start with</span>
+      <span class="by">Sarah Ikein</span>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <h2>Proposed structure</h2>
+    <div class="controls">
+      <button class="btn" id="expand">Expand all</button>
+      <button class="btn" id="collapse">Collapse all</button>
+    </div>
+  </div>
+
+  <details class="hot" open>
+    <summary>
+      <svg class="chev" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M3 1l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="s-title">Getting started</span>
+      <span class="s-why">First request, then first migration.</span>
+      <span class="s-count">3 exist · 3 new</span>
+    </summary>
+    <ul class="pages">
+      <li class="exists"><span class="name">Introduction</span><i class="tag t-exists">Exists</i></li>
+      <li class="exists"><span class="name">Quickstart</span><i class="tag t-exists">Exists</i></li>
+      <li class="exists"><span class="name">Authentication</span><i class="tag t-exists">Exists</i></li>
+      <li class="key"><span class="name">Migrating from OpenAI</span><i class="tag t-new">New</i></li>
+      <li class="key"><span class="name">Migrating from Anthropic</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Migrating from another gateway</span><i class="tag t-new">New</i></li>
+    </ul>
+  </details>
+
+  <details class="hot">
+    <summary>
+      <svg class="chev" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M3 1l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="s-title">Capabilities</span>
+      <span class="s-why">Not every model supports every feature. This says which does.</span>
+      <span class="s-count">1 exists · 6 new</span>
+    </summary>
+    <ul class="pages">
+      <li class="key"><span class="name">Provider support</span><i class="tag t-new">New</i></li>
+      <li class="key"><span class="name">Tool and function calling</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Structured outputs</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Prompt caching</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Multimodal inputs</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Reasoning models</span><i class="tag t-new">New</i></li>
+      <li class="exists"><span class="name">Streaming</span><i class="tag t-exists">Exists</i></li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>
+      <svg class="chev" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M3 1l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="s-title">Routing and reliability</span>
+      <span class="s-why">Failover is the main reason to use a gateway. It gets one sentence today.</span>
+      <span class="s-count">1 exists · 4 new</span>
+    </summary>
+    <ul class="pages">
+      <li><span class="name">How routing works</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Fallback chains</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Retries, timeouts and billing on failover</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Latency and throughput</span><i class="tag t-new">New</i></li>
+      <li class="exists"><span class="name">Models and slugs</span><i class="tag t-exists">Exists</i></li>
+    </ul>
+  </details>
+
+  <details class="hot">
+    <summary>
+      <svg class="chev" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M3 1l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="s-title">Privacy and data</span>
+      <span class="s-why">Every request passes through Openbase. Teams need to know what happens to it.</span>
+      <span class="s-count">4 new</span>
+    </summary>
+    <ul class="pages">
+      <li class="key"><span class="name">Data collection</span><i class="tag t-new">New</i></li>
+      <li class="key"><span class="name">Provider data policies</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Logging</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Compliance and data residency</span><i class="tag t-new">New</i></li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>
+      <svg class="chev" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M3 1l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="s-title">Operations</span>
+      <span class="s-why">What a team needs once real traffic is flowing.</span>
+      <span class="s-count">3 exist · 3 new</span>
+    </summary>
+    <ul class="pages">
+      <li class="exists"><span class="name">Billing and usage</span><i class="tag t-exists">Exists</i></li>
+      <li class="exists"><span class="name">Rate limits</span><i class="tag t-exists">Exists</i></li>
+      <li class="exists"><span class="name">Errors</span><i class="tag t-exists">Exists</i></li>
+      <li><span class="name">Spending limits</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Key management for teams</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Monitoring and usage reporting</span><i class="tag t-new">New</i></li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>
+      <svg class="chev" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M3 1l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="s-title">SDKs and integrations</span>
+      <span class="s-why">Most developers arrive through a framework.</span>
+      <span class="s-count">1 exists · 4 new</span>
+    </summary>
+    <ul class="pages">
+      <li class="exists"><span class="name">SDKs</span><i class="tag t-exists">Exists</i></li>
+      <li><span class="name">LangChain</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Vercel AI SDK</span><i class="tag t-new">New</i></li>
+      <li><span class="name">LlamaIndex</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Agent frameworks</span><i class="tag t-new">New</i></li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>
+      <svg class="chev" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M3 1l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="s-title">Guides</span>
+      <span class="s-why">Tested tutorials, each with a working repo.</span>
+      <span class="s-count">5 new</span>
+    </summary>
+    <ul class="pages">
+      <li><span class="name">Build a fallback chain that survives an outage</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Compare three models on one prompt</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Set a spending cap on a production app</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Swap models without redeploying</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Route by cost, latency or quality</span><i class="tag t-new">New</i></li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>
+      <svg class="chev" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M3 1l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="s-title">Reference</span>
+      <span class="s-why">Lookup, not learning.</span>
+      <span class="s-count">4 new</span>
+    </summary>
+    <ul class="pages">
+      <li><span class="name">API reference</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Model catalog</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Error codes</span><i class="tag t-new">New</i></li>
+      <li><span class="name">Changelog</span><i class="tag t-new">New</i></li>
+    </ul>
+  </details>
+
+  <footer>
+    <h3>Why the pages in yellow come first</h3>
+    <ul>
+      <li><b>Migration guides.</b> Developers already using a provider SDK are the easiest to convert.</li>
+      <li><b>Provider support.</b> Developers need to know which features work on which model before they commit.</li>
+      <li><b>Data privacy.</b> Teams need to know what happens to their prompts before they adopt.</li>
+    </ul>
+  </footer>
+
+</div>
+
+<script>
+  const all = document.querySelectorAll('details');
+  document.getElementById('expand').onclick = () => all.forEach(d => d.open = true);
+  document.getElementById('collapse').onclick = () => all.forEach(d => d.open = false);
+</script>
+</body>
+</html>
